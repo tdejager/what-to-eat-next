@@ -4,6 +4,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { PrismaClient, Recipe } from '@prisma/client'
 
+/// Props for recipe rendering
 type RecipeProps = {
     text: string,
     url: string | null,
@@ -12,7 +13,7 @@ type RecipeProps = {
 const getRecipes = async () => {
     const prisma = new PrismaClient();
     const results = await prisma.recipe.findMany({ take: 10 });
-    return results.map(function(r) { return { text: r.title, url: r.url } });
+    return results;
 }
 
 /**
@@ -35,29 +36,29 @@ const Recipe = ({ text, url }: RecipeProps) => {
  */
 const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
     const recipes = props.recipeList.map((r) => {
-        <Recipe url={r.url} text={r.title} />
+        return <Recipe key={r.id} url={r.url} text={r.title} />
     });
+    console.log(recipes);
     return (
         <div className='flex flex-col items-center gap-y-1 h-full'>
-            <Recipe text="First recipe" />
-            <Recipe text="Recipe 2" url={"https://www.culy.nl/recepten/vegan-bibimbap/"} />
+            {recipes}
         </div>
     )
 }
 
 /// The recipe page
-const RecipeListPage = (recipes: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
         <div className='flex flex-col items-center h-screen w-screen'>
             <h1 className="text-xl md:text-3xl lg:text-6xl font-normal leading-normal mt-0 mb-5">What to eat next?</h1>
-            <RecipeListing recipeList={recipes.recipes} />
+            <RecipeListing recipeList={recipes} />
         </div>
     )
 }
 
 export default RecipeListPage
 
-export const getServerSideProps: GetServerSideProps<{ recipes: Recipe[] }> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<{recipes: Recipe[]}> = async (ctx) => {
     const recipes = await getRecipes();
     return { props: { recipes: recipes } };
 };
