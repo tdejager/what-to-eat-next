@@ -15,5 +15,5 @@ model Recipe {
   title     String
   content   String?
   url       String?
-  imageUrl  String?
+  imageUrl  String? @db.LongText
 }
