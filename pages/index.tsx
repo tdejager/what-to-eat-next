@@ -2,7 +2,8 @@ import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from '
 import Image from 'next/image'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { PrismaClient, Recipe } from '@prisma/client'
+import { Recipe } from '@prisma/client'
+import { prisma } from "../backend/prisma"
 
 /// Props for recipe rendering
 type RecipeProps = {
@@ -11,7 +12,6 @@ type RecipeProps = {
 }
 
 const getRecipes = async () => {
-    const prisma = new PrismaClient();
     const results = await prisma.recipe.findMany({ take: 10 });
     return results;
 }
