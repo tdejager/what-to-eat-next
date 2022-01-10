@@ -49,10 +49,10 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
 /// The recipe page
 const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
-        <div className='flex flex-col items-center h-screen w-screen'>
+        <>
             <h1 className="text-xl md:text-3xl lg:text-6xl font-normal leading-normal mt-0 mb-5">What to eat next?</h1>
             <RecipeListing recipeList={recipes} />
-        </div>
+        </>
     )
 }
 
