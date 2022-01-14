@@ -22,7 +22,7 @@ const getRecipes = async () => {
 const Recipe = ({ text, url }: RecipeProps) => {
     const urlRendered = url ? <a className={"text-center underline"} href={url}>Click for recipe</a> : null;
     return <div
-        className='border-gray-700 border flex flex-col justify-items-center gap-y-3 rounded-xl p-5 bg-gradient-to-b from-gray-100 to-transparent'>
+        className='border-gray-700 border flex flex-col justify-items-center gap-y-3 rounded-xl p-5 shadow-lg bg-gradient-to-b bg-gray-100'>
         <div className="relative h-32 w-64 lg:h-64 lg:w-96">
             <Image className="w-full" src="/pie.jpg" layout="fill" objectFit="cover" alt={"Picture of the recipe"} />
         </div>
