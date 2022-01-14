@@ -1,9 +1,8 @@
-import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
 import Image from 'next/image'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import { Recipe } from '@prisma/client'
-import { prisma } from "../backend/prisma"
+import {Recipe} from '@prisma/client'
+import {prisma} from "../backend/prisma"
+import React from "react";
 
 /// Props for recipe rendering
 type RecipeProps = {
@@ -12,8 +11,7 @@ type RecipeProps = {
 }
 
 const getRecipes = async () => {
-    const results = await prisma.recipe.findMany({ take: 10 });
-    return results;
+    return await prisma.recipe.findMany({take: 10});
 }
 
 /**
@@ -25,8 +23,10 @@ const Recipe = ({ text, url }: RecipeProps) => {
     const urlRendered = url ? <a className={"text-center underline"} href={url}>Click for recipe</a> : null;
     return <div
         className='border-gray-700 border flex flex-col justify-items-center gap-y-3 rounded-xl p-5 bg-gradient-to-b from-gray-100 to-transparent'>
-        <Image src="/pie.jpg" width={200} height={200} alt={"Picture of the recipe"} />
-        <p className='text-xl text-center'>{text}</p>
+        <div className="relative h-32 w-64 lg:h-64 lg:w-96">
+            <Image className="w-full" src="/pie.jpg" layout="fill" objectFit="cover" alt={"Picture of the recipe"} />
+        </div>
+        <p className='text-gray-700 text-center text-xl'>{text}</p>
         {urlRendered}
     </div>
 }
@@ -38,7 +38,6 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
     const recipes = props.recipeList.map((r) => {
         return <Recipe key={r.id} url={r.url} text={r.title} />
     });
-    console.log(recipes);
     return (
         <div className='flex flex-col items-center gap-y-1 h-full'>
             {recipes}
@@ -50,7 +49,7 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
 const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
         <>
-            <h1 className="text-xl md:text-3xl lg:text-6xl font-normal leading-normal mt-0 mb-5">What to eat next?</h1>
+            <h1 className="text-xl md:text-3xl lg:text-3xl font-normal leading-normal mt-0 mb-5">What to eat next?</h1>
             <RecipeListing recipeList={recipes} />
         </>
     )
