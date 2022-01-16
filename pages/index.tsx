@@ -2,7 +2,7 @@ import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
 import {Recipe} from '@prisma/client'
 import {prisma} from "../backend/prisma"
 import React from "react";
-import RecipeCard from "./recipe_card";
+import RecipeCard from "../components/recipe_card";
 
 /* Randomize array in-place using Durstenfeld shuffle algorithm */
 function shuffleRecipes(recipes: Recipe[]) {

@@ -1,6 +1,5 @@
 import React from "react";
-import RecipeCard from "./recipe_card";
-import {prisma} from "../backend/prisma";
+import RecipeCard from "../components/recipe_card";
 import {SaveRecipeResult} from "./api/add_recipe";
 
 /// Saved react flash message with tailwind classes
