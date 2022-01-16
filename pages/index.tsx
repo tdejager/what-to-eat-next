@@ -1,42 +1,32 @@
 import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
-import Image from 'next/image'
 import {Recipe} from '@prisma/client'
 import {prisma} from "../backend/prisma"
 import React from "react";
+import RecipeCard from "./recipe_card";
 
-/// Props for recipe rendering
-type RecipeProps = {
-    text: string,
-    url: string | null,
+/* Randomize array in-place using Durstenfeld shuffle algorithm */
+function shuffleRecipes(recipes: Recipe[]) {
+    for (let i = recipes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = recipes[i];
+        recipes[i] = recipes[j];
+        recipes[j] = temp;
+    }
 }
 
 const getRecipes = async () => {
-    return await prisma.recipe.findMany({take: 10});
+    const recipes = await prisma.recipe.findMany({});
+    shuffleRecipes(recipes);
+    return recipes.slice(0, 5);
 }
 
-/**
- * A recipe in the listing
- * @param param
- * @returns
- */
-const Recipe = ({ text, url }: RecipeProps) => {
-    const urlRendered = url ? <a className={"text-center underline"} href={url}>Click for recipe</a> : null;
-    return <div
-        className='border-gray-700 border flex flex-col justify-items-center gap-y-3 rounded-xl p-5 shadow-lg bg-gradient-to-b bg-gray-100'>
-        <div className="relative h-32 w-64 lg:h-64 lg:w-96">
-            <Image className="w-full" src="/pie.jpg" layout="fill" objectFit="cover" alt={"Picture of the recipe"} />
-        </div>
-        <p className='text-gray-700 text-center text-xl'>{text}</p>
-        {urlRendered}
-    </div>
-}
 
 /**
  * List of number of recipes
  */
 const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
     const recipes = props.recipeList.map((r) => {
-        return <Recipe key={r.id} url={r.url} text={r.title} />
+        return <RecipeCard key={r.id} recipe={r}  />
     });
     return (
         <div className='flex flex-col items-center gap-y-1 h-full'>

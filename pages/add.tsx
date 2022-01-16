@@ -1,52 +1,94 @@
 import React from "react";
+import RecipeCard from "./recipe_card";
+import {prisma} from "../backend/prisma";
+import {SaveRecipeResult} from "./api/add_recipe";
 
 /// Saved react flash message with tailwind classes
-const Saved = () => {
-    const [show, setShow] = React.useState(true);
+const Saved = ({saved, setSaved}: { saved: boolean, setSaved: (s: boolean) => void }) => {
     // Remove after a couple of seconds
     React.useEffect(() => {
-        setTimeout(() => {
-            setShow(false);
-        }, 3000);
-    }, [show]);
-    return (show ? <div className="bg-blue-100 border-t border-b border-green-500 text-green-700 px-4 py-3 mb-4" role="alert">
-        <p className="font-bold">Recipe saved</p>
-        <p className="text-sm">Recipe was saved to the database</p>
-    </div>: null);
+        if (saved) {
+            setTimeout(() => setSaved(false), 3000);
+        }
+    }, [saved, setSaved]);
+    return (saved ?
+        <div className="bg-blue-100 border-t border-b border-green-500 text-green-700 px-4 py-3 mb-4" role="alert">
+            <p className="font-bold">Recipe saved</p>
+            <p className="text-sm">Recipe was saved to the database</p>
+        </div> : null);
 }
 
 
 /// Form that allows the user to add a new Recipe to the database
-const AddForm = ({setSaved}: {setSaved: (s: boolean) => void}) => {
+const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
     const labelClass = "block text-gray-700 text-sm font-bold mb-2"
     const inputClass = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
-    function saveRecipe(recipe?: any) {
-        // Save recipe to database
-        console.log(recipe);
+    const [title, setTitleState] = React.useState("");
+    const [url, setUrlState] = React.useState("");
+    const [imageUrl, setImageUrl] = React.useState("");
+
+    function changeEvent(setFormValue: (value: string) => void) {
+        return (e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormValue(e.target.value);
+        }
+    }
+
+    async function saveRecipe(setGlobalSaved: typeof setSaved) {
+        // // Save recipe to database
+        console.log(title, url, imageUrl);
+
+        const bodyJson = JSON.stringify({
+            title: title,
+            url: url !== "" ? url : null,
+            imageUrl: imageUrl !== "" ? imageUrl : null
+        });
+        console.log(bodyJson);
+        // Create new recipe
+        const res = await fetch('/api/add_recipe', {
+            body: bodyJson,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
+        })
+        //
+        const result = await res.json() as SaveRecipeResult;
+        if(result.succes)
+            setGlobalSaved(true);
     }
 
     return (
-        <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <div>
-                <label className={labelClass} htmlFor="title">Recipe Title:</label>
-                <input className={inputClass} type="text" name="title" />
-            </div>
-            <div>
-                <label className={labelClass} htmlFor="title">Recipe Link:</label>
-                <input className={inputClass} type="url" name="recipe_url" />
-            </div>
-            <div>
-                <label className={labelClass} htmlFor="title">Recipe Image:</label>
-                <input className={inputClass} type="url" name="recipe_url_image" />
-            </div>
-            <button
-                className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onSubmit={saveRecipe}
-                type="submit">
-                Submit
-            </button>
-        </form>);
+        <div>
+            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={(async event => {
+                event.preventDefault();
+                await saveRecipe(setSaved);
+            })}>
+                <div>
+                    <label className={labelClass} htmlFor="title">Recipe Title:</label>
+                    <input required={true} className={inputClass} value={title} onChange={changeEvent(setTitleState)}
+                           type="text"
+                           name="title"/>
+                </div>
+                <div>
+                    <label className={labelClass} htmlFor="recipe_url">Recipe Link:</label>
+                    <input className={inputClass} value={url} onChange={changeEvent(setUrlState)} type="url"
+                           name="recipe_url"/>
+                </div>
+                <div>
+                    <label className={labelClass} htmlFor="recipe_url_image">Recipe Image Link:</label>
+                    <input className={inputClass} type="url" value={imageUrl} onChange={changeEvent(setImageUrl)}
+                           name="recipe_url_image"/>
+                </div>
+                <button
+                    className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                    Submit
+                </button>
+            </form>
+            <RecipeCard recipe={{id: 0, title: title, url: url, imageUrl: imageUrl, content: null}}/>
+        </div>
+    );
 }
 
 /// Add recipe component
@@ -54,7 +96,7 @@ const AddRecipe = () => {
     const [recipeSaved, setSaved] = React.useState(false)
 
     return (<div>
-        {recipeSaved ? <Saved /> : null}
+        {recipeSaved ? <Saved saved={recipeSaved} setSaved={setSaved}/> : null}
         <h1 className="text-xl md:text-3xl lg:text-3xl text-center mb-4">Add recipe</h1>
         <AddForm setSaved={setSaved}/>
     </div>);
