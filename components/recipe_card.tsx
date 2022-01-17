@@ -3,7 +3,7 @@ import {Recipe} from "@prisma/client";
 
 /**
  * A recipe in the listing
- * @param param
+ * @param props the react properties
  * @returns
  */
 const RecipeCard: React.FC<{ recipe: Recipe }> = (props) => {

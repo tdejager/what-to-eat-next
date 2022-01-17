@@ -1,15 +1,19 @@
 import axios from "axios";
+import * as cheerio from "cheerio";
 
-export async function scrapeCuly(url: string) {
-    // TODO implement this later
+
+export type RecipeData = {
+    title: string;
+    url?: string;
+    imageUrl?: string;
+}
+
+export async function scrapeCuly(url: string): Promise<RecipeData> {
     const response = await axios.get(url);
-    console.log(response.data);
-    // axios.get(url)
-    //     .then(response => {
-    //         console.log(response.data);
-    //     })
-    //     .catch(error => {
-    //         console.log(error);
-    //     });
+    const $ = cheerio.load(response.data);
+    let title = $(".article__title").text();
+    title = title.replace("Culy Homemade: ", "")
+    const imageUrl = $(".featured-image__image").attr("src");
+    return {title: title, url: url, imageUrl: imageUrl};
 }
 

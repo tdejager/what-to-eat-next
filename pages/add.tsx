@@ -1,6 +1,8 @@
 import React from "react";
 import RecipeCard from "../components/recipe_card";
 import {SaveRecipeResult} from "./api/add_recipe";
+import {scrapeCuly} from "../backend/util";
+import {GetRecipeResult} from "./api/get_culy_recipe";
 
 /// Saved react flash message with tailwind classes
 const Saved = ({saved, setSaved}: { saved: boolean, setSaved: (s: boolean) => void }) => {
@@ -35,14 +37,11 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
 
     async function saveRecipe(setGlobalSaved: typeof setSaved) {
         // // Save recipe to database
-        console.log(title, url, imageUrl);
-
         const bodyJson = JSON.stringify({
             title: title,
             url: url !== "" ? url : null,
             imageUrl: imageUrl !== "" ? imageUrl : null
         });
-        console.log(bodyJson);
         // Create new recipe
         const res = await fetch('/api/add_recipe', {
             body: bodyJson,
@@ -55,6 +54,34 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
         const result = await res.json() as SaveRecipeResult;
         if(result.succes)
             setGlobalSaved(true);
+
+        // Set form values to empty, using react state
+        setTitleState("");
+        setUrlState("");
+        setImageUrl("");
+    }
+
+    async function setRecipeLink(e: React.ChangeEvent<HTMLInputElement>) {
+        const url = e.target.value;
+        if(url.includes("culy")) {
+            const bodyJson = JSON.stringify({
+                url: url,
+            });
+            // Create new recipe
+            const result = await fetch('/api/get_culy_recipe', {
+                body: bodyJson,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST'
+            });
+            const getRecipeResult = await result.json() as GetRecipeResult;
+            if (getRecipeResult.data) {
+                setTitleState(getRecipeResult.data.title);
+                setImageUrl(getRecipeResult.data.imageUrl || "");
+            }
+            setUrlState(url);
+        }
     }
 
     return (
@@ -64,15 +91,15 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
                 await saveRecipe(setSaved);
             })}>
                 <div>
+                    <label className={labelClass} htmlFor="recipe_url">Recipe Link:</label>
+                    <input className={inputClass} value={url} onChange={async (e) => await setRecipeLink(e)} type="url"
+                           name="recipe_url"/>
+                </div>
+                <div>
                     <label className={labelClass} htmlFor="title">Recipe Title:</label>
                     <input required={true} className={inputClass} value={title} onChange={changeEvent(setTitleState)}
                            type="text"
                            name="title"/>
-                </div>
-                <div>
-                    <label className={labelClass} htmlFor="recipe_url">Recipe Link:</label>
-                    <input className={inputClass} value={url} onChange={changeEvent(setUrlState)} type="url"
-                           name="recipe_url"/>
                 </div>
                 <div>
                     <label className={labelClass} htmlFor="recipe_url_image">Recipe Image Link:</label>

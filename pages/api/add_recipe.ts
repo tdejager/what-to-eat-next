@@ -1,19 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {prisma} from "../../backend/prisma";
+import {RecipeData} from "../../backend/util";
 
 export type SaveRecipeResult = {
     succes: boolean,
     id?: number,
     err?: any,
 }
-
-type RecipeData = {
-    title: string;
-    url?: string;
-    imageUrl?: string;
-}
-
 export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<SaveRecipeResult>
