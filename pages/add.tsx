@@ -5,6 +5,8 @@ import {scrapeCuly} from "../backend/util";
 import {GetRecipeResult} from "./api/get_culy_recipe";
 import {useSession, signIn, signOut} from "next-auth/react"
 
+const btn = "mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline";
+
 /// Saved react flash message with tailwind classes
 const Saved = ({saved, setSaved}: { saved: boolean, setSaved: (s: boolean) => void }) => {
     // Remove after a couple of seconds
@@ -108,7 +110,7 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
                            name="recipe_url_image"/>
                 </div>
                 <button
-                    className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className={btn}
                 >
                     Submit
                 </button>
@@ -130,8 +132,10 @@ const AddRecipe = () => {
         </div>);
     }
     return <>
-        Not signed in <br/>
-        <button onClick={() => signIn()}>Sign in</button>
+        <p className="mt-4 text-xl">Not signed in: </p> <br/>
+        <button className={btn}
+                onClick={() => signIn()}>Sign in
+        </button>
     </>
 }
 

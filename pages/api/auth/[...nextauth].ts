@@ -15,7 +15,7 @@ export default NextAuth({
                 password: {  label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                if(credentials?.username == "piet" && credentials?.password == "piet") {
+                if(credentials?.username == process.env.AUTH_USER && credentials?.password == process.env.AUTH_PASS) {
                     return {
                         user: {
                             id: "piet",
