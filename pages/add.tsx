@@ -3,6 +3,7 @@ import RecipeCard from "../components/recipe_card";
 import {SaveRecipeResult} from "./api/add_recipe";
 import {scrapeCuly} from "../backend/util";
 import {GetRecipeResult} from "./api/get_culy_recipe";
+import {useSession, signIn, signOut} from "next-auth/react"
 
 /// Saved react flash message with tailwind classes
 const Saved = ({saved, setSaved}: { saved: boolean, setSaved: (s: boolean) => void }) => {
@@ -52,7 +53,7 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
         })
         //
         const result = await res.json() as SaveRecipeResult;
-        if(result.succes)
+        if (result.succes)
             setGlobalSaved(true);
 
         // Set form values to empty, using react state
@@ -63,7 +64,7 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
 
     async function setRecipeLink(e: React.ChangeEvent<HTMLInputElement>) {
         const url = e.target.value;
-        if(url.includes("culy")) {
+        if (url.includes("culy")) {
             const bodyJson = JSON.stringify({
                 url: url,
             });
@@ -120,12 +121,18 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
 /// Add recipe component
 const AddRecipe = () => {
     const [recipeSaved, setSaved] = React.useState(false)
-
-    return (<div>
-        {recipeSaved ? <Saved saved={recipeSaved} setSaved={setSaved}/> : null}
-        <h1 className="text-xl md:text-3xl lg:text-3xl text-center mb-4">Add recipe</h1>
-        <AddForm setSaved={setSaved}/>
-    </div>);
+    const {data: session} = useSession()
+    if (session) {
+        return (<div>
+            {recipeSaved ? <Saved saved={recipeSaved} setSaved={setSaved}/> : null}
+            <h1 className="text-xl md:text-3xl lg:text-3xl text-center mb-4">Add recipe</h1>
+            <AddForm setSaved={setSaved}/>
+        </div>);
+    }
+    return <>
+        Not signed in <br/>
+        <button onClick={() => signIn()}>Sign in</button>
+    </>
 }
 
 export default AddRecipe;
