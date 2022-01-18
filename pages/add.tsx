@@ -83,8 +83,8 @@ const AddForm = ({setSaved}: { setSaved: (s: boolean) => void }) => {
                 setTitleState(getRecipeResult.data.title);
                 setImageUrl(getRecipeResult.data.imageUrl || "");
             }
-            setUrlState(url);
         }
+        setUrlState(url);
     }
 
     return (
