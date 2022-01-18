@@ -18,8 +18,8 @@ export default NextAuth({
                 if(credentials?.username == process.env.AUTH_USER && credentials?.password == process.env.AUTH_PASS) {
                     return {
                         user: {
-                            id: "piet",
-                            name: "Piet",
+                            id: '1',
+                            name: process.env.AUTH_USER,
                         }
                     }
                 }
