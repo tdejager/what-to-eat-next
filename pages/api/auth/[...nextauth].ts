@@ -52,4 +52,5 @@ export default NextAuth({
         // encode: async ({ secret, token, maxAge }) => {},
         // decode: async ({ secret, token, maxAge }) => {},
     },
+    secret: process.env.SECRET,
 })
