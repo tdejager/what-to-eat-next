@@ -29,7 +29,7 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
         return <RecipeCard key={r.id} recipe={r}  />
     });
     return (
-        <div className='flex flex-col items-center gap-y-1 h-full'>
+        <div className='flex flex-col items-center gap-y-1 h-full w-full'>
             {recipes}
         </div>
     )
@@ -39,7 +39,7 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
 const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
         <>
-            <h1 className="text-xl md:text-3xl lg:text-3xl font-normal leading-normal mt-0 mb-5">What to eat next?</h1>
+            <h1 className="text-xl md:text-3xl lg:text-3xl font-normal leading-normal mt-0 mb-5 underline">What to eat next?</h1>
             <RecipeListing recipeList={recipes} />
         </>
     )

@@ -5,15 +5,15 @@ import {SessionProvider} from "next-auth/react"
 
 function LinkBar() {
     return (
-        <ul className="flex">
+        <ul className="flex mb-3">
             <li className="mr-6">
                 <Link href={"/"}>
-                    <a className="text-blue-500 hover:text-blue-800">Home</a>
+                    <a className="text-blue-500 underline decoration-dotted hover:text-blue-800">Home</a>
                 </Link>
             </li>
             <li className="mr-6">
                 <Link href={"/add"}>
-                    <a className="text-blue-500 hover:text-blue-800">Add recipe</a>
+                    <a className="text-blue-500 underline decoration-dotted hover:text-blue-800">Add recipe</a>
                 </Link>
             </li>
         </ul>
