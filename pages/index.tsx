@@ -1,6 +1,6 @@
-import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
-import {Recipe} from '@prisma/client'
-import {prisma} from "../backend/prisma"
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { Recipe } from '@prisma/client'
+import { prisma } from "../backend/prisma"
 import React from "react";
 import RecipeCard from "../components/recipe_card";
 
@@ -26,7 +26,7 @@ const getRecipes = async () => {
  */
 const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
     const recipes = props.recipeList.map((r) => {
-        return <RecipeCard key={r.id} recipe={r}  />
+        return <RecipeCard key={r.id} recipe={r} />
     });
     return (
         <div className='flex flex-col items-center gap-y-1 h-full w-full'>
@@ -36,7 +36,7 @@ const RecipeListing: React.FC<{ recipeList: Recipe[] }> = (props) => {
 }
 
 /// The recipe page
-const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const RecipeListPage = ({ recipes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     return (
         <>
             <h1 className="text-xl md:text-3xl lg:text-3xl font-normal leading-normal mt-0 mb-5 underline">What to eat next?</h1>
@@ -47,7 +47,7 @@ const RecipeListPage = ({recipes}: InferGetServerSidePropsType<typeof getServerS
 
 export default RecipeListPage
 
-export const getServerSideProps: GetServerSideProps<{recipes: Recipe[]}> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<{ recipes: Recipe[] }> = async (ctx) => {
     const recipes = await getRecipes();
     return { props: { recipes: recipes } };
 };
